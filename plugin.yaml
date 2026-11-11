@@ -1,0 +1,16 @@
+name: babelaz-pareto-aaa
+version: 0.3.0
+description: Pareto AAA by Babelaz. One line in; a small web game built in rounds, checked in a real browser and judged, until it scores 8/10 or says why it stopped.
+author: Babelaz
+license: MIT
+manifest_version: 2
+api_version: 1
+requires_hermes: ">=0.22.7"
+python_dependencies:
+  - "playwright>=1.64,<1.65"
+provides_tools:
+  - aaa_round
+provides_hooks:
+  - pre_tool_call
+  - pre_verify
+  - transform_llm_output

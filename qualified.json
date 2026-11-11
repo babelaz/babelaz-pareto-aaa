@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "measured": null,
+  "note": "Filled only from real-model anchor-test runs. Empty until then: every slot runs on the user's own model and takes the anchor test once.",
+  "aggregators": {"openrouter": [], "nous": []},
+  "reached_8": []
+}

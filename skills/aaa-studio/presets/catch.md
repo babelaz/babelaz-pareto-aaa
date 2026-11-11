@@ -1,0 +1,11 @@
+# Preset: catch (catcher). Art direction "Summer Hive"
+- Palette: warm dark field #13110d with surface #18150f and lines #2f281e. Ink #f6ead2, muted #ada28d. Amber honey #f5a524, mint dew #6fd6b0, coral #ff6b5b for a miss.
+- Shape language: hexagons. The background is a honeycomb wall in two parallax layers; the catcher is a comb tray of hex cells; drops are rounded teardrops; buttons and pips are hex-clipped.
+- Material and light: honey glows from inside; the falling drops softly light the comb near them. Dew is cool and clear against the warm amber.
+- Pattern: the comb itself, thin lines, never a busy texture. Crisp at play size.
+- Motion: eased (cubic out, cubic-bezier(0.22, 1, 0.36, 1)). The tray tilts a little with speed; a drop splats where it lands; cells fill as the score grows. Reduced motion: no parallax or tilt; splats fade in place.
+- HUD: system UI font stack, tabular numbers, sentence case. Score and misses as hex pips, top corners only.
+- Sound: soft wooden plinks on a catch, pitched by drop kind; a dull drop sound on a miss.
+- Avoid: clip-art bees, glossy buttons, heavy shadows, gradient panels, particles everywhere, untuned default fonts.
+- Anchors: assets/anchors/catch/{dated,clean,current}.png.
+- Keywords that pick this preset: catch, catcher, catching, basket.
