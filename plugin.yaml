@@ -1,5 +1,5 @@
 name: babelaz-pareto-aaa
-version: 0.3.0
+version: 0.3.1
 description: Pareto AAA by Babelaz. One line in; a small web game built in rounds, checked in a real browser and judged, until it scores 8/10 or says why it stopped.
 author: Babelaz
 license: MIT

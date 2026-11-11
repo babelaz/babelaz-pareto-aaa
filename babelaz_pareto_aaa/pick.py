@@ -18,6 +18,18 @@ VAGUE = ("Which game? For example: /aaa make me a brick-breaker · /aaa make me 
 NOT_APP = "Pareto AAA builds small games only for now, not apps or sites. For example: /aaa make me snake."
 PAPER_NOTE = ("No tuned style for this game yet: it uses the house paper style and the general quality bar "
               "(experimental). For your own look, add --refs <folder> with 1-3 PNG pictures.")
+
+
+def style_note(preset: str, refs: int) -> str:
+    """The run-ready line about the look: with --refs, how the pictures meet the preset; paper without: PAPER_NOTE."""
+    if refs and preset == "paper":
+        return (f"Style: your {refs} --refs picture(s) replace the house paper style; the anchors only set the "
+                "quality bar.")
+    if refs:
+        return f"Style: your {refs} --refs picture(s) add to the {preset} preset's art direction."
+    return PAPER_NOTE if preset == "paper" else ""
+
+
 SAME_MODEL = ("One model does every job, so the second opinion at 8 is not independent. For a stronger 8, set "
               "auxiliary.aaa_confirm to a model from another family.")
 

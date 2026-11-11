@@ -27,11 +27,12 @@ Honest notes:
 - A stronger model rating the same game from the same screenshots called it a strong 7: the ball and paddle were too small and faint. A readability rule was added to the style and to the judge after that run.
 - No comparison run with the plugin off was made.
 - This is one run only.
-- A snake run on the general mode: <!-- SNAKE: TBD -->
+- **A second game, no game-specific tuning:** `/aaa make me snake` (general "paper" house style) reached `STATUS: AAA · score 8/10` in 2 rounds on the same model, about 55 minutes. Round 0: all 13 checks passed, judge 8, second opinion 7, so it continued. Round 1: all 13 checks passed (FPS avg 60.0, 1% low 58.8), judge 8, second opinion 8. About 5.2 M input tokens in total, about 95% cache reads.
+- The same caveat applies: the judge and second opinion were the same model. The judge's own unapplied notes say the pieces are small for the sheet and the food looks too much like the snake's body. A stronger model would likely call it a 7.
 
 ![Proof sheet from round 1: the 13 checks, all passed, and the screenshots the judge saw](docs/proof-brick.jpg)
 
-The proof sheet the plugin wrote for round 1 (`aaa-proof.png`, reduced here).
+The proof sheet the plugin wrote for round 1 of the brick run (`aaa-proof.png`, reduced here). The snake run's proof sheet is [docs/proof-snake.jpg](docs/proof-snake.jpg).
 
 ## How a run works
 
@@ -79,7 +80,7 @@ hermes plugins install https://github.com/babelaz/babelaz-pareto-aaa
 3. The first time, it asks which models to use. `/aaa models 1` is the recommended answer; `/aaa models 2` runs everything on your own model.
 4. It prints a line starting with `/goal`. Paste it and press Enter, then leave it to run.
 
-Optional: `/aaa <prompt> --refs <folder>` passes 1 to 3 PNG pictures (at most 8 MB each) of a look you like.
+Optional: `/aaa <prompt> --refs <folder>` passes 1 to 3 PNG pictures (at most 8 MB each) of a look you like. For a game without a tuned style (anything but brick and catch), your pictures replace the house paper style; the reference pictures then only set the quality bar.
 
 Styles: two tuned styles, **brick** (a brick-breaker; tested: 8/10 on a real model, see above) and **catch**. Any other small game uses the house **paper** style and the general quality bar (experimental); its judge uses the brick reference pictures as quality levels only. A vague prompt ("make me a game") or an app or site prompt gets a reply with examples and starts nothing. One model is enough for every job; a model from a second family for the second opinion is recommended, so the check at 8 is independent. Engines: plain canvas by default. A worker may fetch three.js 0.187.0 or PixiJS 8.22.0 from npm once, at the first round; the check accepts only those exact, unmodified files (by hash).
 
@@ -125,6 +126,7 @@ Bundled third-party code: axe-core 4.14.0 (MPL-2.0; re-formatted for line length
 
 - `hermes plugins validate` gives one warning: the plugin reads Hermes's interrupt flag through a private import (`tools.interrupt`), because there is no public one yet. It lets you stop a round with Ctrl+C.
 - The catch style is less tested than brick.
+- `--refs` has not yet finished a run with a real model.
 - The layout check can miss a rotated decoration that covers a button.
 
 ## Licence

@@ -37,6 +37,9 @@ Write in steps: at most about 150 lines per tool call (create the file, then add
 Finish within about 30 minutes: write aaa-done.json as soon as the listed IDs work. A worker still running at 60 minutes is stopped and its files are judged as they are. The plugin's own check plays the game with real key presses, so don't build test harnesses or long tuning simulations (one quick load test is enough), and never make the game play itself. Every tool call re-sends this whole conversation, so keep to about 40 tool calls in all.
 Do only the listed IDs. When every ID is done or blocked, stop. Don't add features, files, tests or refactors that aren't on the list."""
 
+READABLE = ("Readability: the piece the player tracks (ball, head, falling piece) and the player's own piece must be easy "
+            "to see at play size: big enough, with a clear rim or shadow and at least 3:1 contrast with what is behind them.")
+
 
 def worker_brief(*, n: int, prompt: str, preset: str, art: str, taste: str, fixes: list, keep: list,
                  locked, studio: str) -> str:
@@ -49,8 +52,14 @@ def worker_brief(*, n: int, prompt: str, preset: str, art: str, taste: str, fixe
         f"Today is {today()}. You are the Pareto AAA worker. This is round {n}.", RULES, "",
         f"The slice (frozen at round 0): {prompt}",
         "Slice rule: one ~60 s level: title, core action, feedback, win or lose, restart in under 1 s, pause.",
-        f"Art direction ({preset} preset):", art.strip(),
-        f"Taste: {taste.strip() or 'none given; follow the art direction.'}",
+    ]
+    if preset == "paper" and taste.strip():  # the user's --refs pictures replace the house paper style (not add to it)
+        lines += ["Art direction (from the user's --refs pictures; it replaces the house paper style, so use no "
+                  "paper-craft look):", taste.strip(), READABLE]
+    else:  # a tuned preset (brick, catch), or paper without --refs: the preset's art, with any taste on top
+        lines += [f"Art direction ({preset} preset):", art.strip(),
+                  f"Taste: {taste.strip() or 'none given; follow the art direction.'}"]
+    lines += [
         ENGINES,
         (Path(studio) / "checklists" / "overused-words.md").read_text(encoding="utf-8").strip(),
         f"Studio rules and primitives you may copy: {studio} (read only what you need).",
@@ -114,6 +123,11 @@ def round_report(*, line: str, n: int, runs: int, cap: int, done: str, mandatory
     if offered:
         out.append("Judge fixes (you choose): " + "; ".join(f"{f['id']}: {f['text'][:200]}" for f in offered))
     out.append(f"KEEP list: {keep_count} items carried forward.")
+    if mandatory and not offered:  # nothing to choose: say so plainly (a real run's model hesitated here)
+        ids = [f["id"] for f in mandatory]
+        verb = "is" if len(ids) == 1 else "are"
+        out.append(f"No fixes to choose: {' and '.join(ids)} {verb} added automatically. Call aaa_round with keep = [].")
+        return "\n".join(out)
     out.append("Next: call aaa_round with keep = the offered fix IDs you accept, in order. Drop a fix that conflicts "
                "with the preset or taste, or adds scope (features, screens, levels, tests, refactors); keep at least "
                "one unless none were offered.")

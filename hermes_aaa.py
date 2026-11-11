@@ -263,10 +263,12 @@ def _start(text, sid) -> str:
             "a fix that conflicts with the preset or taste, or adds scope. Then reply with a two-line summary. The "
             "goal is done only when the reply starts with a final STATUS line.")
     hr._log(run, f"goal line printed for the user: /goal {goal}")
+    style = pick.style_note(preset, len(refs))
     notes = "You can open index.html in the run folder at any time to see the latest checked round.\n" + (
-        pick.PAPER_NOTE + "\n" if preset == "paper" else "") + (
+        style + "\n" if style else "") + (
         pick.SAME_MODEL + "\n" if _who(cfg, "aaa_judge") == _who(cfg, "aaa_confirm") else "")
-    return (f"Pareto AAA run ready: {root}\nPreset: {preset} (skills/aaa-studio/presets/{preset}.md).\n{notes}"
+    look = " (look from your --refs pictures)" if refs and preset == "paper" else ""
+    return (f"Pareto AAA run ready: {root}\nPreset: {preset} (skills/aaa-studio/presets/{preset}.md){look}.\n{notes}"
             f"Spend bounds: at most {st.CAP_WORKER_RUNS + 1} worker runs and 14 judge calls; token counts are logged "
             f"each round in .aaa/run.log. Billed by: {(cfg.get('model') or {}).get('provider') or 'your provider'}.\n"
             f"{turns_note}{edge}"

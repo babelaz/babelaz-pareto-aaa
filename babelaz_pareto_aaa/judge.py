@@ -82,15 +82,24 @@ CROSS_GAME = ("The anchors show a different game (a brick-breaker). Use them onl
               "material, feedback and cohesion. Never mark the slice down for being a different game or layout.\n")
 
 
+CROSS_GAME_REFS = ("The anchors show a different game (a brick-breaker) in a different look. Use them only for the "
+                   "quality level: finish, polish, feedback, readability and cohesion. Never use them for the look, and "
+                   "never mark the slice down for being a different game, layout or look.\n")
+
+
 def judge_text(ids, measures: dict, refs: int = 0, preset: str = "") -> str:
     """The judge and confirm prompt. measures must hold numbers only (no worker-written text). refs: how many of the
     user's --refs pictures follow the anchors (brief section 6: the judge sees them every round). The paper preset
     borrows the brick anchors, so its judge is told they show another game."""
     ref_line = (f"Then {refs} REFERENCE picture(s) the user chose as the look they want: score how well the slice "
                 "reaches that look, alongside the anchors.\n") if refs else ""
+    cross = CROSS_GAME if preset == "paper" else ""
+    if preset == "paper" and refs:  # the user's pictures replace the house paper style: they alone define the look
+        cross = CROSS_GAME_REFS
+        ref_line = (f"Then {refs} REFERENCE picture(s) the user chose: they alone define the look. Score how well the "
+                    "slice reaches that look, at the quality level the anchors show.\n")
     return JUDGE_TEXT.format(
-        today=today(), ids=", ".join(ids), scale=SCALE, tells=DATED_TELLS, refs=ref_line,
-        cross=CROSS_GAME if preset == "paper" else "",
+        today=today(), ids=", ".join(ids), scale=SCALE, tells=DATED_TELLS, refs=ref_line, cross=cross,
         measures=json.dumps(measures, sort_keys=True),
     )
 
