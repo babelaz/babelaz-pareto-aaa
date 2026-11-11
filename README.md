@@ -6,7 +6,7 @@ A Hermes Agent plugin. You type one line, and Hermes builds a small web game, th
 /aaa make me a brick-breaker
 ```
 
-<!-- DEMO -->
+Demo video (87 s): https://x.com/i/status/2120585629000229126
 
 ## Result on a real model
 
@@ -25,7 +25,6 @@ Honest notes:
 
 - The judge and the second opinion were the same model, so the 8 was not independently confirmed.
 - A stronger model rating the same game from the same screenshots called it a strong 7: the ball and paddle were too small and faint. A readability rule was added to the style and to the judge after that run.
-- No comparison run with the plugin off was made.
 - This is one run only.
 - **A second game, no game-specific tuning:** `/aaa make me snake` (general "paper" house style) reached `STATUS: AAA · score 8/10` in 2 rounds on the same model, about 55 minutes. Round 0: all 13 checks passed, judge 8, second opinion 7, so it continued. Round 1: all 13 checks passed (FPS avg 60.0, 1% low 58.8), judge 8, second opinion 8. About 5.2 M input tokens in total, about 95% cache reads.
 - The same caveat applies: the judge and second opinion were the same model. The judge's own unapplied notes say the pieces are small for the sheet and the food looks too much like the snake's body. A stronger model would likely call it a 7.
@@ -33,6 +32,25 @@ Honest notes:
 ![Proof sheet from round 1: the 13 checks, all passed, and the screenshots the judge saw](docs/proof-brick.jpg)
 
 The proof sheet the plugin wrote for round 1 of the brick run (`aaa-proof.png`, reduced here). The snake run's proof sheet is [docs/proof-snake.jpg](docs/proof-snake.jpg).
+
+## More games, and one comparison
+
+Same model (DeepSeek V4.1 Flash, every job), 11 November 2026, one run each:
+
+| Prompt | Result | Rounds | Time |
+|---|---|---|---|
+| `/aaa make me a brick-breaker` | AAA 8/10 | 2 | 48 min |
+| `/aaa make me snake` | AAA 8/10 | 2 | 55 min |
+| `/aaa make me space invaders` | AAA 8/10 | 3 | 63 min |
+| `/aaa make me tetris --refs <2 pictures>` | AAA 8/10 | 5 | 1 h 50 min |
+
+**One comparison, Tetris with the same two pictures.** The same model in plain Hermes, with one request and no plugin, worked for about 2 hours and used 24.2 M tokens. With the plugin: 11.5 M tokens (52% fewer), 1 h 50 min. Cost was about the same (about US$0.50 each), because most of the extra tokens were cheap cache reads. On the same PC both games ran at 60 fps.
+
+What the comparison also showed, honestly:
+
+- The plugin builds one polished level by design; the plain run built a fuller game (hold, next, levels, touch controls) with about 50% more code.
+- Blind reviews by stronger models preferred the plain run overall (7.5 vs 6 on visuals, 7 vs 5.5 on code). They rated the plugin's blocks more readable and its rendering code faster, but found a bug in its multi-row line clear and a missing Next preview.
+- One test, one game. The fixes it points to are listed under Known gaps.
 
 ## How a run works
 
@@ -126,7 +144,9 @@ Bundled third-party code: axe-core 4.14.0 (MPL-2.0; re-formatted for line length
 
 - `hermes plugins validate` gives one warning: the plugin reads Hermes's interrupt flag through a private import (`tools.interrupt`), because there is no public one yet. It lets you stop a round with Ctrl+C.
 - The catch style is less tested than brick.
-- `--refs` has not yet finished a run with a real model.
+- The judge and the second opinion are often the same model, which scores generously: stronger reviewers called the 8s a 7 (Tetris a 6). Planned: a sceptical second opinion and a side-by-side comparison with the reference pictures.
+- `--refs` copies the style of your pictures but not their layout (for example a side panel with a Next preview). Planned: a layout line in the art direction and a judge cap when the layout doesn't match.
+- The checks prove a game runs well (errors, frame rate, layout, accessibility, sound, restart), not that its rules are right or complete. Planned: genre rule checks and genre essentials (Next/Hold for Tetris, a ship for invaders), and a gentler difficulty ramp.
 - The layout check can miss a rotated decoration that covers a button.
 
 ## Licence
